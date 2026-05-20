@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vigan Travel Guide 🏛️</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap');
+
+  :root {
+    --brown: #5C2C0A;
+    --mid: #8B4513;
+    --light: #A0522D;
+    --cream: #FDF6E3;
+    --parchment: #FAF0DC;
+    --gold: #F0C870;
+    --text: #3A1A00;
+    --muted: #7A4A2A;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: linear-gradient(160deg, #FDF6E3 0%, #FAF0DC 60%, #F5E6C8 100%);
+    min-height: 100vh;
+    color: var(--text);
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #3A1200 0%, #5C2C0A 40%, #8B4513 100%);
+    padding: 32px 20px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(92,44,10,0.4);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 50%;
+    transform: translateX(-50%);
+    width: 130%;
+    height: 50px;
+    background: #FDF6E3;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  }
+  .header-sub { font-size: 11px; letter-spacing: 6px; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(38px, 9vw, 64px);
+    color: var(--cream);
+    font-weight: 700;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    letter-spacing: 2px;
+  }
+  .header-province { font-size: 14px; color: var(--gold); letter-spacing: 4px; font-style: italic; margin-top: 4px; }
+  .header-badge {
+    display: inline-block; margin-top: 14px;
+    padding: 6px 18px; background: rgba(240,200,112,0.2);
+    border: 1px solid rgba(240,200,112,0.4); border-radius: 20px;
+    font-size: 13px; color: var(--gold);
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex; overflow-x: auto;
+    background: #3A1200;
+    position: sticky; top: 0; z-index: 100;
+    scrollbar-width: none; box-shadow: 0 4px 16px rgba(58,18,0,0.4);
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 13px 16px; border: none; background: none;
+    border-bottom: 3px solid transparent;
+    color: rgba(240,200,112,0.45);
+    font-family: 'Lato', sans-serif; font-size: 13px;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* PAGES */
+  .page { display: none; padding: 20px 16px 70px; max-width: 680px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* SECTION TITLE */
+  .section-title { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--brown); margin-bottom: 4px; font-weight: 400; }
+  .section-sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+
+  /* CARDS */
+  .card {
+    background: #FFFBF0; border: 1px solid #E8D5B0;
+    border-radius: 14px; overflow: hidden;
+    box-shadow: 0 2px 10px rgba(92,44,10,0.07);
+    margin-bottom: 12px;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .card.open { box-shadow: 0 8px 28px rgba(92,44,10,0.15); transform: scale(1.01); }
+
+  .card-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px; cursor: pointer;
+  }
+  .card-icon {
+    width: 46px; height: 46px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .card-name { font-size: 15px; font-weight: 700; color: var(--text); }
+  .card-badges { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+  .badge {
+    font-size: 10px; padding: 2px 8px; border-radius: 10px;
+    border: 1px solid; font-family: 'Lato', sans-serif;
+  }
+  .badge-free { background: #E8F5E9; color: #2E7D32; border-color: #C8E6C9; }
+  .card-chevron { color: var(--muted); font-size: 14px; margin-left: auto; flex-shrink: 0; }
+
+  .card-body {
+    display: none; padding: 0 16px 16px;
+    border-top: 1px solid #E8D5B0;
+    background: linear-gradient(to bottom, #FFFBF0, #FFF8EC);
+  }
+  .card-body.open { display: block; }
+  .card-desc { color: #4A2800; font-size: 14px; line-height: 1.75; margin: 12px 0 10px; }
+  .tip-box {
+    background: #FFF3DC; border: 1px solid var(--gold);
+    border-radius: 8px; padding: 8px 12px;
+    font-size: 13px; color: #7A4A00; margin-bottom: 10px;
+  }
+  .map-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 16px; background: var(--brown); color: var(--gold);
+    border-radius: 8px; font-size: 12px; text-decoration: none;
+    font-family: 'Lato', sans-serif; font-weight: 700;
+    border: none; cursor: pointer;
+  }
+
+  /* FILTERS */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .filter-btn {
+    padding: 5px 14px; border-radius: 20px; border: 1px solid #D4A875;
+    background: transparent; color: var(--muted);
+    font-size: 12px; cursor: pointer; font-family: 'Lato', sans-serif;
+    transition: all 0.2s;
+  }
+  .filter-btn.active { background: var(--mid); color: var(--cream); border-color: var(--mid); }
+
+  /* ROUTE CARD */
+  .route-card { background: #FFFBF0; border: 1px solid #E8D5B0; border-radius: 14px; overflow: hidden; margin-bottom: 16px; }
+  .route-header { padding: 13px 16px; display: flex; align-items: center; gap: 10px; }
+  .route-header .rh-title { color: var(--cream); font-weight: 700; font-size: 15px; }
+  .route-header .rh-sub { font-size: 11px; margin-top: 1px; }
+  .route-body { padding: 16px; }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step { display: flex; gap: 14px; }
+  .step-left { display: flex; flex-direction: column; align-items: center; width: 42px; flex-shrink: 0; }
+  .step-circle {
+    width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .step-line { width: 2px; flex: 1; margin: 4px 0; min-height: 18px; }
+  .step-content { padding-bottom: 18px; }
+  .step-title { font-weight: 700; color: var(--text); font-size: 14px; margin-bottom: 3px; }
+  .step-detail { color: #6B3A1A; font-size: 13px; line-height: 1.65; }
+
+  /* STATS ROW */
+  .stats-row { display: flex; gap: 10px; margin-bottom: 20px; }
+  .stat-box {
+    flex: 1; background: #FFFBF0; border: 1px solid #E8D5B0;
+    border-radius: 12px; padding: 12px; text-align: center;
+  }
+  .stat-icon { font-size: 22px; }
+  .stat-label { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .stat-value { font-size: 14px; font-weight: 700; color: var(--text); }
+
+  /* INFO BOX */
+  .info-box { border-radius: 10px; padding: 12px 14px; font-size: 13px; margin-bottom: 14px; line-height: 1.6; }
+  .info-gold { background: #FFF3DC; border: 1px solid var(--gold); color: #7A4A00; }
+  .info-blue { background: #E8F4F8; border: 1px solid #A8D4E6; color: #1A4A5C; }
+  .info-green { background: #E8F5E9; border: 1px solid #C8E6C9; color: #1B5E20; }
+
+  /* FOOD GRID */
+  .food-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+  .food-card {
+    background: #FFFBF0; border: 1px solid #E8D5B0; border-radius: 12px;
+    padding: 16px; text-align: center;
+    box-shadow: 0 2px 8px rgba(92,44,10,0.06);
+  }
+  .food-emoji { font-size: 34px; margin-bottom: 8px; }
+  .food-name { font-weight: 700; color: var(--text); font-size: 13px; margin-bottom: 4px; }
+  .food-desc { color: #6B3A1A; font-size: 11px; line-height: 1.5; }
+
+  /* TIPS */
+  .tip-item {
+    background: #FFFBF0; border: 1px solid #E8D5B0; border-radius: 12px;
+    padding: 14px 16px; display: flex; gap: 14px; align-items: flex-start;
+    margin-bottom: 10px; box-shadow: 0 2px 8px rgba(92,44,10,0.05);
+  }
+  .tip-icon { font-size: 22px; flex-shrink: 0; }
+  .tip-text { color: var(--text); font-size: 14px; line-height: 1.65; }
+
+  /* ITINERARY */
+  .itin-row {
+    display: flex; gap: 12px; padding: 9px 0;
+    border-bottom: 1px dashed #E8D5B0; font-size: 13px;
+  }
+  .itin-time { font-weight: 700; color: var(--mid); flex-shrink: 0; width: 60px; padding-top: 1px; font-size: 12px; }
+  .itin-act { color: var(--text); line-height: 1.5; }
+
+  /* BUDGET TABLE */
+  .budget-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0; border-bottom: 1px dashed #E8D5B0; font-size: 13px;
+  }
+  .budget-item { color: #4A2800; }
+  .budget-amt { color: var(--mid); font-weight: 700; }
+
+  /* RFID BADGE */
+  .rfid-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
+  .rfid-chip {
+    padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .rfid-easy { background: #1565C0; color: white; }
+  .rfid-auto { background: #B71C1C; color: white; }
+  .rfid-free { background: #2E7D32; color: white; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center; padding: 18px 16px;
+    color: var(--muted); font-size: 12px;
+    border-top: 1px solid #E8D5B0;
+    background: rgba(253,246,227,0.8);
+  }
+
+  h3.sub-heading { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--brown); margin: 16px 0 10px; font-weight: 400; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-sub">UNESCO World Heritage City</div>
+  <h1>Vigan City</h1>
+  <div class="header-province">Ilocos Sur, Philippines</div>
+  <div class="header-badge">🗓️ Para sa inyong Sabado na biyahe!</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showPage('spots', this)">🏛️ Pasyalan</button>
+  <button class="tab" onclick="showPage('travel', this)">🚗 Papunta</button>
+  <button class="tab" onclick="showPage('food', this)">🥟 Pagkain</button>
+  <button class="tab" onclick="showPage('tips', this)">💡 Tips</button>
+</div>
+
+<!-- ==================== PAGE: TOURIST SPOTS ==================== -->
+<div id="page-spots" class="page active">
+  <p class="section-title">Mga Dapat Pasyalan</p>
+  <p class="section-sub">I-tap ang kahit alin para sa details at mapa 📍</p>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterSpots('All', this)">Lahat</button>
+    <button class="filter-btn" onclick="filterSpots('Heritage', this)">Heritage</button>
+    <button class="filter-btn" onclick="filterSpots('Museum', this)">Museum</button>
+    <button class="filter-btn" onclick="filterSpots('Nature', this)">Nature</button>
+    <button class="filter-btn" onclick="filterSpots('Culture', this)">Culture</button>
+    <button class="filter-btn" onclick="filterSpots('Food', this)">Food</button>
+  </div>
+
+  <div id="spots-container"></div>
+</div>
+
+<!-- ==================== PAGE: TRAVEL ==================== -->
+<div id="page-travel" class="page">
+  <p class="section-title">Papunta sa Vigan</p>
+  <p class="section-sub">By Car mula Gapan City, Nueva Ecija 🚗</p>
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-icon">📍</div><div class="stat-label">Distansya</div><div class="stat-value">~480 km</div></div>
+    <div class="stat-box"><div class="stat-icon">⏱️</div><div class="stat-label">Travel Time</div><div class="stat-value">6–7 hrs</div></div>
+    <div class="stat-box"><div class="stat-icon">⛽</div><div class="stat-label">Fuel Est.</div><div class="stat-value">~₱1,500</div></div>
+  </div>
+
+  <!-- ROUTE VIA CLLEX (SHORTCUT) -->
+  <div class="route-card">
+    <div class="route-header" style="background: linear-gradient(135deg, #1B5E20, #2E7D32);">
+      <span style="font-size:24px">🌟</span>
+      <div>
+        <div class="rh-title">Pinakamabilis: CLLEX Shortcut!</div>
+        <div class="rh-sub" style="color: #A5D6A7;">Gapan → CLLEX → TPLEX → Vigan</div>
+      </div>
+    </div>
+    <div class="route-body">
+      <div class="info-green" style="margin-bottom:14px;">
+        ✅ <strong>Bonus:</strong> Ang CLLEX (Central Luzon Link Expressway) ay <strong>LIBRE</strong> pa ngayon para Class 1 vehicles! Ito ang pinakamalapit na expressway mula Gapan.
+      </div>
+
+      <div class="rfid-row">
+        <div class="rfid-chip rfid-free">🟢 CLLEX — LIBRE</div>
+        <div class="rfid-chip rfid-auto">🔴 TPLEX — Autosweep</div>
+        <div class="rfid-chip rfid-easy">🔵 NLEX/SCTEX — Easytrip</div>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:14px;">Siguraduhing may load ang RFID bago umalis!</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-left">
+            <div class="step-circle" style="background:#E8F5E9;font-size:22px;">📍</div>
+            <div class="step-line" style="background:#E8D5B0;"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Gapan City → Cabanatuan City</div>
+            <div class="step-detail">Mula Gapan, dumiretso papunta ng Cabanatuan via Maharlika Highway. Mga <strong>20–30 mins</strong> lang. Dito papasok sa CLLEX.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left">
+            <div class="step-circle" style="background:#E8F5E9;font-size:22px;">🆓</div>
+            <div class="step-line" style="background:#E8D5B0;"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">CLLEX — Libre! (Cabanatuan → Tarlac)</div>
+            <div class="step-detail">Pumasok sa <strong>CLLEX (Central Luzon Link Expressway)</strong> sa Cabanatuan. Tumatakbo hanggang Tarlac area para kumonekta sa TPLEX. Walang toll — libre pa ngayon!</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left">
+            <div class="step-circle" style="background:#FFF3E0;font-size:22px;">🛣️</div>
+            <div class="step-line" style="background:#E8D5B0;"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">TPLEX — Tarlac → Rosario, La Union</div>
+            <div class="step-detail">Mula CLLEX, kumonekta sa <strong>TPLEX (Tarlac-Pangasinan-La Union Expressway)</strong>. Ito ang pinakamahaba at pinakamagandang bahagi ng expressway — dumadaan sa Pangasinan. I-exit sa <strong>Rosario, La Union</strong> (pinakadulo ng TPLEX). Mga ~2 hrs sa TPLEX. Kailangan ng <strong>Autosweep RFID</strong>.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left">
+            <div class="step-circle" style="background:#FFF3E0;font-size:22px;">🛤️</div>
+            <div class="step-line" style="background:#E8D5B0;"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Rosario, La Union → Vigan (National Highway)</div>
+            <div class="step-detail">Mula TPLEX Rosario exit, sumunod sa <strong>Ilocos Highway / National Highway</strong> papuntang hilaga. Dadaan sa San Fernando, La Union → Bauang → Naguilian → Vigan. Mga <strong>2–2.5 hrs</strong> ang biyahe dito. Scenic ang daan!</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left">
+            <div class="step-circle" style="background:#8B4513;font-size:22px;">🏛️</div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Vigan City — Nakarating na kayo!</div>
+            <div class="step-detail">Mag-park sa malapit ng Heritage Village. May paid parking areas sa paligid ng Calle Crisologo.</div>
+          </div>
+        </div>
+      </div>
+
+      <a class="map-btn" href="https://www.google.com/maps/dir/Gapan+City,+Nueva+Ecija/Vigan+City,+Ilocos+Sur" target="_blank" style="margin-top:10px; display:inline-flex;">
+        🗺️ Buksan ang Route sa Google Maps
+      </a>
+    </div>
+  </div>
+
+  <!-- ALTERNATIVE VIA NLEX -->
+  <div class="route-card">
+    <div class="route-header" style="background: linear-gradient(135deg, #1A237E, #283593);">
+      <span style="font-size:22px">🔄</span>
+      <div>
+        <div class="rh-title">Alternative: NLEX → SCTEX → TPLEX</div>
+        <div class="rh-sub" style="color: #9FA8DA;">Kung hindi pa open ang CLLEX sa area ninyo</div>
+      </div>
+    </div>
+    <div class="route-body">
+      <div class="info-blue">
+        Gapan → <strong>Santa Rita/San Simon exit (NLEX)</strong> → NLEX patungong north → <strong>SCTEX</strong> (Clark area) → <strong>TPLEX</strong> → Rosario, La Union → Vigan.<br><br>
+        Toll estimate: ~₱600–700 one way. Kailangan ng <strong>Easytrip RFID</strong> para sa NLEX/SCTEX at <strong>Autosweep RFID</strong> para sa TPLEX.
+      </div>
+    </div>
+  </div>
+
+  <!-- DEPARTURE TIP -->
+  <div class="info-gold">
+    ⏰ <strong>Kailan aalis?</strong> Mag-alis kayo ng <strong>7 AM</strong>, makakarating ng Vigan mga <strong>1:00–2:00 PM</strong>. Hapon at gabi ang tour — perfect dahil mas maganda ang Calle Crisologo sa gabi! 🌙
+  </div>
+
+  <!-- BUDGET -->
+  <div class="route-card">
+    <div class="route-header" style="background: linear-gradient(135deg, #4A148C, #6A1B9A);">
+      <span style="font-size:22px">💸</span>
+      <div>
+        <div class="rh-title">Estimated Car Expenses</div>
+        <div class="rh-sub" style="color: #CE93D8;">Round trip estimate</div>
+      </div>
+    </div>
+    <div class="route-body">
+      <div class="budget-row"><span class="budget-item">Toll fees (one way)</span><span class="budget-amt">₱300–500</span></div>
+      <div class="budget-row"><span class="budget-item">Fuel (one way, ~480km)</span><span class="budget-amt">₱1,200–1,600</span></div>
+      <div class="budget-row"><span class="budget-item">Parking sa Vigan</span><span class="budget-amt">₱50–100/day</span></div>
+      <div class="budget-row"><span class="budget-item">Accommodation (1 night)</span><span class="budget-amt">₱800–2,000</span></div>
+      <div class="budget-row" style="border:none"><span class="budget-item" style="font-weight:700">Total (RT, 4 pax)</span><span class="budget-amt" style="font-size:15px">~₱4,000–7,000</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE: FOOD ==================== -->
+<div id="page-food" class="page">
+  <p class="section-title">Mga Dapat Tikman</p>
+  <p class="section-sub">Huwag umalis ng Vigan nang hindi natitikman ang mga ito! 😋</p>
+
+  <div class="food-grid">
+    <div class="food-card"><div class="food-emoji">🥟</div><div class="food-name">Vigan Empanada</div><div class="food-desc">Crispy at filled ng egg, longganisa, at papaya. THE must-try!</div></div>
+    <div class="food-card"><div class="food-emoji">🌭</div><div class="food-name">Vigan Longganisa</div><div class="food-desc">Garlic-heavy sausage. Bilhin din frozen para pasalubong!</div></div>
+    <div class="food-card"><div class="food-emoji">🥩</div><div class="food-name">Bagnet</div><div class="food-desc">Lechon-style crispy pork na mas masarap pa sa lechon!</div></div>
+    <div class="food-card"><div class="food-emoji">🥬</div><div class="food-name">Dinengdeng</div><div class="food-desc">Healthy Ilocano veggie stew. Masustansya at masarap!</div></div>
+    <div class="food-card"><div class="food-emoji">🌽</div><div class="food-name">Chichacorn</div><div class="food-desc">Corn chips — pinaka-sikat na pasalubong!</div></div>
+    <div class="food-card"><div class="food-emoji">🫙</div><div class="food-name">Sukang Iloko</div><div class="food-desc">Sikat na Ilocano vinegar. Pampadagdag sa empanada!</div></div>
+  </div>
+
+  <h3 class="sub-heading">🍽️ Saan Kakain?</h3>
+  <div class="card" style="margin-bottom:12px;">
+    <div style="padding:14px 16px;">
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed #E8D5B0;">
+        <span>📍</span><div><strong style="font-size:14px;">Plaza Burgos Food Center</strong><br><span style="font-size:12px;color:var(--muted)">Pinaka-sikat na food hub! Dito ang pinakamura at masarap na empanada at local delicacies.</span></div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed #E8D5B0;">
+        <span>📍</span><div><strong style="font-size:14px;">Cafe Leona</strong><br><span style="font-size:12px;color:var(--muted)">Historic restaurant sa Calle Crisologo area. Great para sit-down Ilocano meal.</span></div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;">
+        <span>📍</span><div><strong style="font-size:14px;">Kobo sa Vigan</strong><br><span style="font-size:12px;color:var(--muted)">Magandang restaurant para sa grupo. Maraming Ilocano dishes.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub-heading">🛍️ Pasalubong na Bilhin</h3>
+  <div class="info-gold">
+    🥩 Bagnet (vacuum packed) &nbsp;•&nbsp; 🌭 Longganisa (frozen) &nbsp;•&nbsp; 🌽 Chichacorn &nbsp;•&nbsp; 🫙 Sukang Iloko &nbsp;•&nbsp; 🧶 Abel Iloco fabric &nbsp;•&nbsp; 🏺 Burnay pottery
+  </div>
+</div>
+
+<!-- ==================== PAGE: TIPS ==================== -->
+<div id="page-tips" class="page">
+  <p class="section-title">Travel Tips</p>
+  <p class="section-sub">Para mas masaya at smooth ang inyong biyahe! 🙌</p>
+
+  <div class="tip-item"><span class="tip-icon">⏰</span><span class="tip-text"><strong>Mag-alis ng maaga</strong> — 3–4 AM para makarating ng Vigan mga 9–10 AM. Konti pa ang traffic sa ganyang oras!</span></div>
+  <div class="tip-item"><span class="tip-icon">💳</span><span class="tip-text"><strong>I-load ang RFID mo</strong> bago umalis — Autosweep para TPLEX, Easytrip para NLEX/SCTEX. Minimum ₱500 load para safe.</span></div>
+  <div class="tip-item"><span class="tip-icon">📷</span><span class="tip-text"><strong>Pumunta ng Calle Crisologo ng 6–8 AM</strong> para magandang photos — konti pa tao. Ganda din pag gabi kapag nag-iilaw!</span></div>
+  <div class="tip-item"><span class="tip-icon">🏨</span><span class="tip-text"><strong>Mag-book ng hotel malapit sa Heritage Village</strong> para walking distance sa lahat ng tourist spots.</span></div>
+  <div class="tip-item"><span class="tip-icon">🌤️</span><span class="tip-text"><strong>Mainit ang Vigan</strong> — magdala ng tubig, sunscreen, at fan. Best visiting hours: 6–10 AM at 4–8 PM.</span></div>
+  <div class="tip-item"><span class="tip-icon">🛺</span><span class="tip-text"><strong>Mag-kalesa</strong> para sa tour ng Calle Crisologo — romantic at convenient! Mag-negotiate muna ng presyo (~₱150–200/kalesa).</span></div>
+  <div class="tip-item"><span class="tip-icon">⛽</span><span class="tip-text"><strong>Mag-fill up ng gasolina</strong> sa Gapan o Cabanatuan bago pumasok sa expressway para hindi kayo mag-alala.</span></div>
+
+  <h3 class="sub-heading">📋 Sample 1-Day Itinerary</h3>
+  <div class="card">
+    <div style="background:var(--mid);padding:12px 16px;">
+      <span style="color:var(--cream);font-weight:700;font-size:14px;">Sabado — Buong Araw na Tour!</span>
+    </div>
+    <div style="padding:12px 16px 16px;">
+        <div class="itin-row"><span class="itin-time">7:00 AM</span><span class="itin-act">Alis mula Gapan City 🚗 (via CLLEX → TPLEX)</span></div>
+      <div class="itin-row"><span class="itin-time">~1:00 PM</span><span class="itin-act">Nakarating Vigan! Mag-check in sa hotel.</span></div>
+      <div class="itin-row"><span class="itin-time">1:30 PM</span><span class="itin-act">Lunch sa Plaza Burgos — empanada, bagnet, longganisa! 🥟🥩</span></div>
+      <div class="itin-row"><span class="itin-time">3:00 PM</span><span class="itin-act">Burgos Museum + Crisologo Museum 🖼️ (habang hindi pa mainit-init)</span></div>
+      <div class="itin-row"><span class="itin-time">4:30 PM</span><span class="itin-act">RG Jar Factory — pottery making demo 🏺</span></div>
+      <div class="itin-row"><span class="itin-time">5:30 PM</span><span class="itin-act">Bantay Bell Tower — mag-picture sa labas 🔔</span></div>
+      <div class="itin-row"><span class="itin-time">6:30 PM</span><span class="itin-act">Shopping ng pasalubong bago magsara ang mga tindahan 🛍️</span></div>
+      <div class="itin-row"><span class="itin-time">7:30 PM</span><span class="itin-act">Calle Crisologo pag gabi — grabe ang ganda ng ilaw! 🏛️✨</span></div>
+      <div class="itin-row" style="border:none"><span class="itin-time">8:30 PM</span><span class="itin-act">Dancing fountains sa Plaza Salcedo + dinner 🍽️</span></div>
+    </div>
+  </div>
+
+  <div class="info-blue" style="margin-top:14px;">
+    🗺️ I-open ang <strong>Google Maps</strong> pag nasa Vigan na para sa live na direksyon sa bawat spot. I-search lang ang pangalan ng lugar!
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  🏛️ Vigan City Travel Guide &nbsp;•&nbsp; Ingat sa biyahe! Enjoy! 🇵🇭
+</div>
+
+<script>
+const spots = [
+  { id:1, name:"Calle Crisologo", emoji:"🏛️", cat:"Heritage", free:true,
+    desc:"Ang pinaka-iconic na lugar sa Vigan! Cobblestone street na napapalibutan ng mga Spanish-era bahay na bato. Mag-kalesa ride para mas masaya! Ganda lalo sa gabi kapag nag-iilaw ang mga bintana.",
+    tip:"💡 Pumunta ng maaga (6–8AM) para konti pa tao at magandang photos!", maps:"Calle+Crisologo+Vigan+Ilocos+Sur" },
+  { id:2, name:"Plaza Salcedo", emoji:"⛲", cat:"Heritage", free:true,
+    desc:"Malaking plaza sa gitna ng Vigan, katabi ng Vigan Cathedral. Famous ang dancing fountain show dito pag gabi. May food stalls din sa paligid!",
+    tip:"💡 Fountain show usually around 7–9PM. Libre naman!", maps:"Plaza+Salcedo+Vigan" },
+  { id:3, name:"St. Paul Metropolitan Cathedral", emoji:"⛪", cat:"Heritage", free:true,
+    desc:"Isa sa mga pinakamatandang simbahan sa Pilipinas, itinayo noong 1574. Earthquake Baroque ang estilo — makapal ang dingding para hindi maguho sa lindol. Worth visiting ang interior!",
+    tip:"💡 Nasa tabi ng Plaza Salcedo. Libre pumasok.", maps:"Vigan+Cathedral+Ilocos+Sur" },
+  { id:4, name:"Bantay Bell Tower", emoji:"🔔", cat:"Heritage", free:false,
+    desc:"Itinayo noong 1591, ginagamit na lookout tower laban sa mga pirata noon! Maganda ang view mula sa itaas. Pababa-baba pa rin dahil sa 2022 earthquake pero pwede ka pumunta at mag-picture sa labas.",
+    tip:"💡 ~10-15 mins tricycle ride mula Calle Crisologo. Optional donation ang entrance.", maps:"Bantay+Bell+Tower+Vigan" },
+  { id:5, name:"Crisologo Museum", emoji:"🪴", cat:"Museum", free:true,
+    desc:"Ancestral house ng pamilyang Crisologo na puno ng antique furniture, medals, at relics. Makikita mo kung paano namuhay ang mga maimpluwensyang pamilya sa Ilocos noong nakaraan.",
+    tip:"💡 Libre ang pasok! Nasa malapit lang ng Calle Crisologo.", maps:"Crisologo+Museum+Vigan" },
+  { id:6, name:"Burgos Museum (National Museum)", emoji:"🖼️", cat:"Museum", free:true,
+    desc:"Ancestral house ng Padre Jose Burgos, isa sa mga bayaning pari. Puno ng Ilocanong artifacts, paintings, at kasaysayan. Libre at napaka-educational!",
+    tip:"💡 Libre! Kasama ito sa NM Ilocos Regional Museum Complex.", maps:"Burgos+Museum+Vigan" },
+  { id:7, name:"Syquia Mansion", emoji:"🏠", cat:"Museum", free:false,
+    desc:"Dating tahanan ng pamilya ni Presidente Elpidio Quirino. Preserved ang interior kasama ang mga personal na gamit ng pamilya. Isa sa pinaka-well-preserved na ancestral houses sa Vigan.",
+    tip:"💡 May entrance fee, usually ₱30–50.", maps:"Syquia+Mansion+Vigan" },
+  { id:8, name:"Baluarte Zoo", emoji:"🦒", cat:"Nature", free:false,
+    desc:"Private zoo ni dating Governor Chavit Singson. May giraffes, ostriches, deer, at iba pang hayop. Pwede mag-feeding at mag-picture! Magandang pasyalan ng pamilya.",
+    tip:"💡 Mainit dito kaya magdala ng tubig at sunscreen!", maps:"Baluarte+Zoo+Vigan" },
+  { id:9, name:"RG Jar Factory", emoji:"🏺", cat:"Culture", free:false,
+    desc:"Panoorin kung paano ginagawa ang traditional Burnay pottery ng mga Ilocano gamit ang paikot na gulong. Pwede ka ring mag-try gumawa ng sariling palayok!",
+    tip:"💡 Libre ang panonood. May extra bayad kung gusto mong subukan gumawa.", maps:"RG+Jar+Factory+Vigan" },
+  { id:10, name:"Plaza Burgos (Food Center)", emoji:"🥟", cat:"Food", free:true,
+    desc:"Ang food heart ng Vigan! Dito makikita ang pinakamasarap na Vigan empanada, longganisa, at iba pang Ilocano delicacies. Lively ang atmosphere lalo kapag gabi.",
+    tip:"💡 Try ang bagnet, longganisa, at empanada — pinaka-sikat na Vigan foods!", maps:"Plaza+Burgos+Vigan" },
+];
+
+const catColors = {
+  Heritage: { bg:'#8B4513', light:'#8B451320' },
+  Museum:   { bg:'#2D5A6B', light:'#2D5A6B20' },
+  Nature:   { bg:'#3A7A3A', light:'#3A7A3A20' },
+  Culture:  { bg:'#7A4A8A', light:'#7A4A8A20' },
+  Food:     { bg:'#B85C00', light:'#B85C0020' },
+};
+
+let activeFilter = 'All';
+
+function renderSpots(filter) {
+  const container = document.getElementById('spots-container');
+  const filtered = filter === 'All' ? spots : spots.filter(s => s.cat === filter);
+  container.innerHTML = filtered.map(s => {
+    const col = catColors[s.cat] || catColors.Heritage;
+    return `
+    <div class="card" id="card-${s.id}" style="border-left:4px solid ${col.bg}">
+      <div class="card-header" onclick="toggleCard(${s.id})">
+        <div class="card-icon" style="background:${col.light}">${s.emoji}</div>
+        <div style="flex:1;min-width:0">
+          <div class="card-name">${s.name}</div>
+          <div class="card-badges">
+            <span class="badge" style="background:${col.light};color:${col.bg};border-color:${col.bg}40">${s.cat}</span>
+            ${s.free ? '<span class="badge badge-free">LIBRE</span>' : ''}
+          </div>
+        </div>
+        <span class="card-chevron" id="chev-${s.id}">▼</span>
+      </div>
+      <div class="card-body" id="body-${s.id}">
+        <p class="card-desc">${s.desc}</p>
+        <div class="tip-box">${s.tip}</div>
+        <a class="map-btn" href="https://www.google.com/maps/search/?api=1&query=${s.maps}" target="_blank">📍 Buksan sa Google Maps</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCard(id) {
+  const body = document.getElementById('body-' + id);
+  const card = document.getElementById('card-' + id);
+  const chev = document.getElementById('chev-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  card.classList.toggle('open', !isOpen);
+  chev.textContent = isOpen ? '▼' : '▲';
+}
+
+function filterSpots(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSpots(cat);
+}
+
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+renderSpots('All');
+</script>
+</body>
+</html>
