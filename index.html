@@ -275,6 +275,7 @@
     <button class="filter-btn" onclick="filterSpots('Nature', this)">Nature</button>
     <button class="filter-btn" onclick="filterSpots('Culture', this)">Culture</button>
     <button class="filter-btn" onclick="filterSpots('Food', this)">Food</button>
+    <button class="filter-btn" onclick="filterSpots('Beach', this)">🏖️ Beach</button>
   </div>
 
   <div id="spots-container"></div>
@@ -468,9 +469,8 @@
         <div class="itin-row"><span class="itin-time">7:00 AM</span><span class="itin-act">Alis mula Gapan City 🚗 (via CLLEX → TPLEX)</span></div>
       <div class="itin-row"><span class="itin-time">~1:00 PM</span><span class="itin-act">Nakarating Vigan! Mag-check in sa hotel.</span></div>
       <div class="itin-row"><span class="itin-time">1:30 PM</span><span class="itin-act">Lunch sa Plaza Burgos — empanada, bagnet, longganisa! 🥟🥩</span></div>
-      <div class="itin-row"><span class="itin-time">3:00 PM</span><span class="itin-act">Burgos Museum + Crisologo Museum 🖼️ (habang hindi pa mainit-init)</span></div>
-      <div class="itin-row"><span class="itin-time">4:30 PM</span><span class="itin-act">RG Jar Factory — pottery making demo 🏺</span></div>
-      <div class="itin-row"><span class="itin-time">5:30 PM</span><span class="itin-act">Bantay Bell Tower — mag-picture sa labas 🔔</span></div>
+      <div class="itin-row"><span class="itin-time">3:00 PM</span><span class="itin-act">🏖️ Santiago Cove o Sta. Catalina Beach — swimming at chill time! (Mas malamig na ang araw)</span></div>
+      <div class="itin-row"><span class="itin-time">5:30 PM</span><span class="itin-act">Burgos Museum + Crisologo Museum 🖼️</span></div>
       <div class="itin-row"><span class="itin-time">6:30 PM</span><span class="itin-act">Shopping ng pasalubong bago magsara ang mga tindahan 🛍️</span></div>
       <div class="itin-row"><span class="itin-time">7:30 PM</span><span class="itin-act">Calle Crisologo pag gabi — grabe ang ganda ng ilaw! 🏛️✨</span></div>
       <div class="itin-row" style="border:none"><span class="itin-time">8:30 PM</span><span class="itin-act">Dancing fountains sa Plaza Salcedo + dinner 🍽️</span></div>
@@ -519,6 +519,12 @@ const spots = [
   { id:10, name:"Plaza Burgos (Food Center)", emoji:"🥟", cat:"Food", free:true,
     desc:"Ang food heart ng Vigan! Dito makikita ang pinakamasarap na Vigan empanada, longganisa, at iba pang Ilocano delicacies. Lively ang atmosphere lalo kapag gabi.",
     tip:"💡 Try ang bagnet, longganisa, at empanada — pinaka-sikat na Vigan foods!", maps:"Plaza+Burgos+Vigan" },
+  { id:11, name:"Santiago Cove", emoji:"🏖️", cat:"Beach", free:false,
+    desc:"Tinatawag na 'Boracay of Ilocos Sur'! Maputing buhangin at malinaw na turquoise na tubig. Ideal para sa swimming, kayaking, at paddleboarding. Family-friendly ang shoreline at mahinahon ang alon. Maganda rin ang sunset dito!",
+    tip:"💡 Mga 30–45 mins drive mula Vigan. May cottages for rent at ilang beach resorts. May bayad ang entrance sa resort areas pero may free public beach section din.", maps:"Santiago+Cove+Ilocos+Sur" },
+  { id:12, name:"Sta. Catalina Beach", emoji:"🌊", cat:"Beach", free:true,
+    desc:"Hidden gem! Katabi lang ng Vigan — mga 15–20 mins lang ang biyahe. Mahaba at malawak na beach na may kulay-abuhing buhangin. Walang masyadong turista kaya tahimik at relaxed ang vibes. Perfect kung gusto ninyong mag-chill.",
+    tip:"💡 Libre ang beach! Mas malapit sa Vigan kaysa Santiago Cove — magandang option kung kulang sa oras.", maps:"Sta+Catalina+Beach+Ilocos+Sur" },
 ];
 
 const catColors = {
@@ -527,6 +533,7 @@ const catColors = {
   Nature:   { bg:'#3A7A3A', light:'#3A7A3A20' },
   Culture:  { bg:'#7A4A8A', light:'#7A4A8A20' },
   Food:     { bg:'#B85C00', light:'#B85C0020' },
+  Beach:    { bg:'#0277BD', light:'#0277BD20' },
 };
 
 let activeFilter = 'All';
